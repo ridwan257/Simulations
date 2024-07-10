@@ -1,7 +1,7 @@
 
 all:
-	python3 main.py
-
-.PHONY : rocket
-rocket:
 	python3 rocket.py
+
+.PHONY : foodh
+foodh:
+	python3 food-hunter.py

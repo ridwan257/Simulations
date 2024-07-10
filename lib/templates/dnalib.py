@@ -64,7 +64,7 @@ class DNA(ABC):
         # return child_dna
 
     @abstractmethod
-    def mapper(self):
+    def phenotype_mapper(self):
         pass
 
 

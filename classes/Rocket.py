@@ -1,14 +1,17 @@
 import dis
 import numpy as np
+import pygame
+import classes
+import classes.obstracle
 from classes.veichle import VeichleA
 from lib import rmath
-from lib import dnalib
+from lib.templates import dnalib
 from lib import utils as utl
 
 
 class Rocket:
     def __init__(self, texture, x=150, y=150):
-        self.image = texture
+        self.image :pygame.Surface = texture
         self.position = np.array([x, y], dtype=np.float64)
         self.velocity = np.array([0., -1.])
         self.acc = np.zeros(2)
@@ -16,12 +19,14 @@ class Rocket:
         self.maxF = 0.4
         self.dna = RocketDNA()
         self.dna.neucleotide = 'lpuqrts'
+        self.collapsed = False
         
     def update(self):
-        self.velocity += self.acc
-        self.velocity = rmath.limit(self.velocity, self.maxV)
-        self.position += self.velocity
-        self.acc *= 0
+        if not self.collapsed:
+            self.velocity += self.acc
+            self.velocity = rmath.limit(self.velocity, self.maxV)
+            self.position += self.velocity
+            self.acc *= 0
 
     def apply_force(self, force):
         self.acc += force
@@ -57,7 +62,7 @@ class Rocket:
         return steer
     
     def read_at(self, index):
-        force = self.dna.mapper(index)
+        force = self.dna.phenotype_mapper(index)
         force = rmath.set_mag(force, self.maxV)
 
         force = force - self.velocity
@@ -65,11 +70,25 @@ class Rocket:
 
         return force
 
-    def calculate_fitness(self, target):
+    def calculate_fitness(self, target, counter):
         dist = np.linalg.norm(self.position - target)
-        self.dna.fitness = rmath.linear_map(dist, 0, 1000, 100, 0)
+        fitness = rmath.linear_map(dist, 0, 1000, 50, 0)
+        if not self.collapsed:
+            fitness += 30 + (fitness/50) * 20
+        
+        self.dna.fitness = fitness 
         
 
+    def check_obstracle(self, obstracle : classes.obstracle.SolidBody):
+        x, y = self.position
+        x0, y0 = obstracle.position
+        x1, y1 = obstracle.w+x0, obstracle.h+y0
+
+        if x > x0 and x < x1 and y > y0 and y < y1:
+            self.collapsed = True
+
+
+        
 
 
     # def eat(self, foods):
@@ -128,7 +147,7 @@ class RocketDNA(dnalib.DNA):
         return new_seq
 
     
-    def mapper(self, ind):
+    def phenotype_mapper(self, ind):
         key = self.seq[ind]
         return RocketDNA.force_mapper.get(key)
         
@@ -140,7 +159,7 @@ def reproduce(population, initial_position, rate):
     )
 
     total_candidate = len(population) // 2 + 1
-    mates = dnalib.random_mates(total_candidate, len(population)) + len(population) - total_candidate
+    mates = dnalib.random_mates(total_candidate, len(population), True) + len(population) - total_candidate
     texture = population[0].image
     children = []
     for i, j in mates:
