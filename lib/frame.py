@@ -47,6 +47,7 @@ def __default_event_handler():
 
 class Window:
     def __init__(self, w=400, h=300, title='Hello World'):
+        self.pos = (0, 0)
         self.w = w
         self.h = h
         self.surface = None
@@ -71,6 +72,10 @@ class Window:
     @framerate.setter
     def framerate(self, n):
         self.__fps = n
+    
+    @property
+    def is_running(self):
+        return self.__running
 
     def set_esc_to_quit(self):
         self.__esc_to_exit = True
@@ -149,7 +154,8 @@ class Window:
 
 class Surface:
     def __init__(self, x, y, w, h):
-        self.surface = pygame.Surface((w, h))
+        self.surface = pygame.Surface((w, h)).convert_alpha()
+        self.surface.fill((0, 0, 0, 0))
         self.pos = (x, y)
         self.w = w
         self.h = h

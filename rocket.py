@@ -12,7 +12,7 @@ from classes import Rocket, obstracle
 # from os import environ
 # environ['SDL_VIDEO_WINDOW_POS'] = f"100,100"
 
-WIDTH, HEIGHT=400, 600
+WIDTH, HEIGHT=500, 600
 # main window created
 win = frame.Window(WIDTH, HEIGHT, title="Hello World")
 win.set_esc_to_quit()
@@ -23,7 +23,7 @@ win.framerate = 60
 # one is for simulation for e.g. 400x400
 # another one for some text or other
 # Sruface for main simulation for e.g. 400x400
-app = frame.Surface(0, 0, 400, 500)
+app = frame.Surface(0, 0, WIDTH, 550)
 # using this pen we can draw some figure on main screen
 pen = shape.AShape(app)
 
@@ -42,7 +42,7 @@ moon = utl.image('./assets/image/moon-64px.png', (32, 32))
 rocket_texture = utl.image('./assets/image/rocket-64px.png', (20, 30))
 
 # ------------------- Simulation Entities Variable Section --------------------
-dna_lenght = 300
+dna_lenght = 350
 dna_counter = 0
 popsize = 40
 population = []
@@ -50,7 +50,7 @@ generation_number = 0
 target_position = r.c(350, 50)
 candidate_index = []
 mutation_rate = 15
-initial_position = r.c(app.w/2, app.h)
+initial_position = r.c(200, 500)
 brick1 = obstracle.SolidBody((120, 200), 120, 20)
 brick2 = obstracle.SolidBody((240, 120), 200, 20)
 

@@ -74,7 +74,9 @@ class Rocket:
         dist = np.linalg.norm(self.position - target)
         fitness = rmath.linear_map(dist, 0, 1000, 50, 0)
         if not self.collapsed:
-            fitness += 30 + (fitness/50) * 20
+            fitness *= 2
+        else:
+            fitness *= 0.5
         
         self.dna.fitness = fitness 
         
@@ -158,16 +160,17 @@ def reproduce(population, initial_position, rate):
         key = lambda rocket : rocket.dna.fitness
     )
 
+    x0, y0 = initial_position
     total_candidate = len(population) // 2 + 1
     mates = dnalib.random_mates(total_candidate, len(population), True) + len(population) - total_candidate
     texture = population[0].image
     children = []
     for i, j in mates:
         # print()
-        print(i, j)
+        # print(i, j)
         # print(sorted_population[i].dna.get(), '|', sorted_population[j].dna.get())
-        initial_position[0] += np.random.normal(0, 3)
-        child = Rocket(texture, *initial_position)
+        x0 += np.random.normal(0, 3)
+        child = Rocket(texture, x0, y0)
         child.dna.load(RocketDNA.cross(
             sorted_population[i].dna, sorted_population[j].dna, rate
         ))

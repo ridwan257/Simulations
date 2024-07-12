@@ -49,5 +49,9 @@ def get_elapsed_time(start_time):
         elapsed_time = (pygame.time.get_ticks() - start_time) / 1000
         return elapsed_time
 
+def toggle(value : bool)->bool:
+    if value:
+        return False
+    return True
 
 
