@@ -1,7 +1,3 @@
-
-
-
-import lib
 import lib.shape
 
 

@@ -1,8 +1,4 @@
-from tkinter import font
-from traceback import print_tb
-from turtle import pos
 import pygame
-from setuptools import Command
 from lib import utils as utl
 
 class InputBox():

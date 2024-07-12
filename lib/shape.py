@@ -2,7 +2,6 @@ import pygame
 import pygame.gfxdraw
 import numpy as np
 from lib import rmath
-import lib
 import lib.frame
 
 class Shape:

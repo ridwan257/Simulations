@@ -1,5 +1,3 @@
-from tabnanny import check
-from tkinter import Widget
 import pygame
 import numpy as np
 from lib import color as c

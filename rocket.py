@@ -1,6 +1,5 @@
-from h11 import PAUSED
-import pygame
-import numpy as np
+# import pygame
+# import numpy as np
 from lib import color as c
 from lib import frame
 from lib import shape
