@@ -6,7 +6,6 @@ from lib import shape
 from lib import rmath
 from lib import utils as utl
 from lib import rio
-from separation_axis_theorem import separating_axis_theorem
 
 # from os import environ
 # environ['SDL_VIDEO_WINDOW_POS'] = f"100,100"
@@ -71,8 +70,6 @@ def main_loop():
     collided = rmath.polygon_colision([(x1+w1/2, y1), (x1+w1, y1+h1), (x1, y1+h1)], 
                [(x2, y2), (x2+w2, y2), (x2+w2, y2+h2), (x2, y2+h2)])
 
-    # collided = separating_axis_theorem([(x1+w1/2, y1), (x1+w1, y1+h1), (x1, y1+h1)], 
-    #            [(x2, y2), (x2+w2, y2), (x2+w2, y2+h2), (x2, y2+h2)])
 
     pen.no_stroke()
     
