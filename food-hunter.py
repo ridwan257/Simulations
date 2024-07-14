@@ -4,7 +4,7 @@ from lib import color as c
 from lib import frame
 from lib import shape
 from lib import utils as utl
-from lib import pyio
+from lib import rio
 from classes.veichle import VeichleA, Food, reproduce_vehicles
 
 from os import environ
@@ -190,24 +190,24 @@ def main_loop():
     # -------------------- diplaying in ui ------------------------------
     # *******************************************************************
     # after counting total veichle, here is showing in ui
-    pyio.println(ui, f'Current Generation - {generaion_number}', (10, 10))
-    pyio.println(ui, f'Ancestor Lifespan - {generation_life_span:.2f}s', (10, 25))
-    pyio.println(ui, f'Total Alive - {total_alive}', (10, 40))
-    pyio.println(ui, f'Mutation Rate - {mutation_rate}%', (10, 55))
-    pyio.println(ui, f'Mutated Child - {mutated_child}', (10, 70))
-    pyio.println(ui, f'Current - {food_report["food"] + food_report["poison"]}', (250, 10))
-    pyio.println(ui, f'food - {food_report["food"]}/{total_food}', (250, 25))
-    pyio.println(ui, f'poison - {food_report["poison"]}/{total_poison}', (250, 40))
+    rio.println(ui, f'Current Generation - {generaion_number}', (10, 10))
+    rio.println(ui, f'Ancestor Lifespan - {generation_life_span:.2f}s', (10, 25))
+    rio.println(ui, f'Total Alive - {total_alive}', (10, 40))
+    rio.println(ui, f'Mutation Rate - {mutation_rate}%', (10, 55))
+    rio.println(ui, f'Mutated Child - {mutated_child}', (10, 70))
+    rio.println(ui, f'Current - {food_report["food"] + food_report["poison"]}', (250, 10))
+    rio.println(ui, f'food - {food_report["food"]}/{total_food}', (250, 25))
+    rio.println(ui, f'poison - {food_report["poison"]}/{total_poison}', (250, 40))
     
     # if we find the best vechiles then we should print it information
     best_one = veichles[best_vehicle_index]
     if best_vehicle_index > -1:
-        pyio.println(ui, f'Best One:', (390, 10))
-        pyio.println(ui, f'Health - {best_one.health:.2f}', (390, 25))
-        pyio.println(ui, f'Position - {utl.to_string(best_one.position, 1, "|")}', (390,40))
-        pyio.println(ui, f'Velocity - {utl.to_string(best_one.velocity, 2, "|")}', (390, 55))
-        pyio.println(ui, f'Factor - {best_one.dna[0]:.2f} | {best_one.dna[1]:0.2f}', (390, 70))
-        pyio.println(ui, f'Radii - {best_one.dna[2]:.2f} | {best_one.dna[3]:0.2f}', (390, 85))
+        rio.println(ui, f'Best One:', (390, 10))
+        rio.println(ui, f'Health - {best_one.health:.2f}', (390, 25))
+        rio.println(ui, f'Position - {utl.to_string(best_one.position, 1, "|")}', (390,40))
+        rio.println(ui, f'Velocity - {utl.to_string(best_one.velocity, 2, "|")}', (390, 55))
+        rio.println(ui, f'Factor - {best_one.dna[0]:.2f} | {best_one.dna[1]:0.2f}', (390, 70))
+        rio.println(ui, f'Radii - {best_one.dna[2]:.2f} | {best_one.dna[3]:0.2f}', (390, 85))
         # i am marking the best one
         # i only draw if any one is left else no
         if total_alive > 0:

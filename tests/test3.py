@@ -3,8 +3,8 @@ import pygame.gfxdraw
 import sys
 from lib import shape
 from lib import frame
-from lib import pyio
-from lib.pyio import InputBox
+from lib import rio
+from lib.rio import InputBox
 
 w = 50
 h = 80
@@ -53,7 +53,7 @@ def main():
     pygame.draw.circle(aa_surface.surface, (255, 0, 0), (50, 50), 50, 1)
     # box.is_focused()
     
-    pyio.println(aa_surface, f'{box.focused}', (20, 60))
+    rio.println(aa_surface, f'{box.focused}', (20, 60))
 
 
 

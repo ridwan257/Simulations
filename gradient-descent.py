@@ -5,7 +5,7 @@ from lib import frame
 from lib import shape
 from lib import rmath
 from lib import utils as utl
-from lib import pyio
+from lib import rio
 
 # from os import environ
 # environ['SDL_VIDEO_WINDOW_POS'] = f"100,100"
@@ -26,7 +26,7 @@ app = frame.Surface(0, 0, WIDTH, HEIGHT)
 pen = shape.AShape(app)
 
 font = pygame.font.SysFont('CodeNewRoman Nerd Font', 14)
-input_box = pyio.InputBox(app, font, c.BLACK, (200, 200, 200), (0, HEIGHT-30, WIDTH, 30), (c.BLACK, 1))
+input_box = rio.InputBox(app, font, c.BLACK, (200, 200, 200), (0, HEIGHT-30, WIDTH, 30), (c.BLACK, 1))
 # -------------- Global Variable section ---------------
 
 X = np.zeros(0)
@@ -91,12 +91,12 @@ def main_loop():
         pen.Acircle(x, y, 5)
     
 
-    pyio.println(app, f'Iteration no : {iteration}', (10, HEIGHT-150))
-    pyio.println(app, 'Equation, y = a + bx', (10, HEIGHT-135))
-    pyio.println(app, f'learning rateA = {learning_rateA}', (10, HEIGHT-120))
-    pyio.println(app, f'learning rateB = {learning_rateB}', (10, HEIGHT-105))
-    pyio.println(app, f'a = {a:.4f}', (10, HEIGHT-90))
-    pyio.println(app, f'b = {b:.4f}', (10, HEIGHT-75))
+    rio.println(app, f'Iteration no : {iteration}', (10, HEIGHT-150))
+    rio.println(app, 'Equation, y = a + bx', (10, HEIGHT-135))
+    rio.println(app, f'learning rateA = {learning_rateA}', (10, HEIGHT-120))
+    rio.println(app, f'learning rateB = {learning_rateB}', (10, HEIGHT-105))
+    rio.println(app, f'a = {a:.4f}', (10, HEIGHT-90))
+    rio.println(app, f'b = {b:.4f}', (10, HEIGHT-75))
 
     # *******************************************************************
     # ----------------------- input processing --------------------------

@@ -156,8 +156,8 @@ class AShape(Shape):
             if self._stroke:
                 pygame.draw.aalines(aa_surface, self._stroke_color, True, points, 1)
         
-            self.screen.render(aa_surface, angle, x, y, mode)
-            return
+            points = self.screen.render(aa_surface, angle, x, y, mode)
+            return points
         
         transformed_points = np.array([(x+dx, y+dy) for dx, dy in points])
         if angle == 0 and mode != 'c':

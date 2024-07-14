@@ -20,3 +20,8 @@ test4:
 gradient-descent:
 	python3 gradient-descent.py
 
+
+
+.PHONY : collision_checker
+collision_checker:
+	python3 collision_checker.py

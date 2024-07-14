@@ -1,5 +1,6 @@
 from sys import exit
 import pygame
+import numpy as np
 
 
 # const
@@ -186,15 +187,20 @@ class Surface:
             if angle == 0:
                 rect = image.get_rect(center=(x, y))
                 self.surface.blit(image, rect.topleft)
+                return np.array([rect.topleft, rect.topright, rect.bottomright, rect.bottomleft])
             else:
                 temp_image = pygame.transform.rotate(image, angle)
                 rect = temp_image.get_rect(center=(x, y))
                 self.surface.blit(temp_image, rect.topleft)
+                return np.array([rect.topleft, rect.topright, rect.bottomright, rect.bottomleft])
         else :
             if angle == 0:
+                rect = image.get_rect(topleft=(x, y))
                 self.surface.blit(image, (x, y))
-                return
+                return np.array([rect.topleft, rect.topright, rect.bottomright, rect.bottomleft])
+            
             temp_image = pygame.transform.rotate(image, angle)
             orect = image.get_rect(topleft=(x, y))
             rect = temp_image.get_rect(center=orect.center)
             self.surface.blit(temp_image, rect)
+            return np.array([rect.topleft, rect.topright, rect.bottomright, rect.bottomleft])

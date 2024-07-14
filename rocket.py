@@ -5,7 +5,7 @@ from lib import frame
 from lib import shape
 from lib import rmath as r
 from lib import utils as utl
-from lib import pyio
+from lib import rio
 from classes import Rocket, obstracle
 
 # from os import environ
@@ -93,10 +93,10 @@ def main_loop():
                 rkt.calculate_fitness(target_position, dna_counter)
                 # print(i, '->', rkt.dna.fitness)
             rkt.show(app)
-            pyio.println(app, f'{i}', rkt.position)
+            rio.println(app, f'{i}', rkt.position)
             
             if SHOW_INFO:
-                pyio.println(app, f'{i} -> {rkt.dna.fitness:.3f}', (2, 270+15*i))
+                rio.println(app, f'{i} -> {rkt.dna.fitness:.3f}', (2, 270+15*i))
             
     
         if not PUASE_SIMUALTION: 
@@ -128,8 +128,8 @@ def main_loop():
     # ---------------------- Printing Some Stuff ------------------------
     # *******************************************************************
 
-    pyio.println(app, f'Generation No - {generation_number}', (10, 10))
-    pyio.println(app, f'Counter - {dna_counter}', (10, 25))
+    rio.println(app, f'Generation No - {generation_number}', (10, 10))
+    rio.println(app, f'Counter - {dna_counter}', (10, 25))
 
 
 

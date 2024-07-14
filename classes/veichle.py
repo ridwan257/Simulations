@@ -1,4 +1,4 @@
-import pygame
+# import pygame
 import numpy as np
 from lib import rmath
 from lib import color as c
