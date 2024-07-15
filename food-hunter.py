@@ -144,13 +144,15 @@ def main_loop():
         # first adding a conditon to check game is paused or not
         # if pause then just veicle should not update but draw
         if not PAUSE_SIMULATION:
-            v.health = -0.1
+            v.health = -0.25
             force, food_report = v.eat(buckets, app.w, app.h)
             force += v.boundary2(app.w, app.h, 5, 1)
             v.apply_force(force)
             v.update()
-        if show_perception : v.show(pen)
-        else : v.show(pen)
+        if show_perception : v.show_boundary()
+        else : v.hide_boundary()
+        
+        v.show(pen)
 
         # print(best_vehicle_index)
         # print(best_health)

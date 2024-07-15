@@ -25,3 +25,7 @@ gradient-descent:
 .PHONY : collision_checker
 collision_checker:
 	python3 collision_checker.py
+
+.PHONY : matrix_rain
+matrix_rain:
+	python3 matrix_rain.py

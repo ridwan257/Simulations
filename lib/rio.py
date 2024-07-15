@@ -8,6 +8,7 @@ class InputBox():
 	def __init__(self, surface, font, font_color, box_bg_color, box_info, border):
 		"""
 		Parameters:
+		font : a font object of pygame
 		box_info : tuple(x, y, w, h) of box position ans size
 		"""
 		self.surface = surface
@@ -105,6 +106,27 @@ FONT = {
 	"size" : 14,
 	"color" : (0, 0, 0)
 }		
+
+
+def load_font(name, size, system_font=True):
+	if system_font:
+		return pygame.font.SysFont(name, size)
+	else:
+		return pygame.font.Font(name, size)
+
+
+def genarate_pseudo_bold_text(font, text, color=(0, 255, 70), offset=1):
+	width, height = font.render(text, True, color).get_size()
+	
+	bold_surface = pygame.Surface((width + offset, height + offset)).convert_alpha()
+	bold_surface.fill((0, 0, 0, 0))
+	
+	# drawing the text multiple time
+	for dx in range(-offset, offset):
+		for dy in range(-offset,  offset + 1):
+			bold_surface.blit(font.render(text, True, color), (dx, dy))
+	
+	return bold_surface
 
 
 def println(surface, txt, pos = (100,100), **font_info):

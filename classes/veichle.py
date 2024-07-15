@@ -174,9 +174,9 @@ class VeichleA:
         if self.__boundary and pen:
             pen.no_fill()
             pen.stroke(c.BLUE)
-            pen.Acircle(self.position, self.dna[2])
+            pen.circle(self.position, self.dna[2])
             pen.stroke(c.RED)
-            pen.Acircle(self.position, self.dna[3])
+            pen.circle(self.position, self.dna[3])
 
         angle = rmath.heading(self.velocity)
         pen.no_stroke()

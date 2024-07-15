@@ -4,6 +4,7 @@ import numpy as np
 
 
 # const
+ALPHA = pygame.SRCALPHA
 KEYS = {
     "esc" : pygame.K_ESCAPE,
     "return" : pygame.K_RETURN,

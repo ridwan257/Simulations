@@ -1,3 +1,4 @@
+from typing import List, Union
 import numpy as np
 
 
@@ -66,7 +67,7 @@ def inf_map(value : float, bmin : float, bmax : float):
     return x
 
 
-def polygon_colision(polygon1 : list | np.ndarray, polygon2 : list | np.ndarray):
+def polygon_colision(polygon1 : Union[List, np.ndarray], polygon2 : Union[List[float], np.ndarray]):
     """
     detect collision between to convex polygon.
 
