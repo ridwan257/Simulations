@@ -29,3 +29,7 @@ collision_checker:
 .PHONY : matrix_rain
 matrix_rain:
 	python3 matrix_rain.py
+
+.PHONY : binary_separation
+binary_separation:
+	python3 binary_separation.py

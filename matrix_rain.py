@@ -12,9 +12,6 @@ from classes.katakana import WaterStream
 # environ['SDL_VIDEO_WINDOW_POS'] = f"100,100"
 
 
-# typedef to create vector in easy way
-c = rmath.c
-
 WIDTH, HEIGHT=1000, 600
 # main window created
 win = frame.Window(WIDTH, HEIGHT, title="Matrix Rain")
