@@ -5,7 +5,8 @@ import numpy as np
 def to_string(vector, digit=3, sep=' '):
     text = np.array2string(vector, precision=digit, 
                            suppress_small=True, separator=sep)
-    return text[1:-1].strip()
+    # return text[1:-1].strip()
+    return text
 
 def image(filepath, size=None):
     img = pygame.image.load(filepath).convert_alpha()   

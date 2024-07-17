@@ -115,6 +115,7 @@ def main_loop():
 
     rio.println(app, f'y = {y1:.4f} + {- (w1 / w2):.4f}x', (10, 10))
     rio.println(app, f'iteration = {iteration}', (10, 25))
+    rio.println(app, f'Learning rate = {brain.learning_rate}', (10, 40))
 
 
     # update window or chaging the current frame by next one

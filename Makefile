@@ -6,7 +6,7 @@ all:
 foodh:
 	python3 food-hunter.py
 
-.PHONY : test2 test3 test4
+.PHONY : test2 test3 test4 test5 test6
 test2: 
 	python3 -m tests.test2
 
@@ -16,11 +16,15 @@ test3:
 test4: 
 	python3 -m tests.test4
 
+test5: 
+	python3 -m tests.test5
+
+test6: 
+	python3 -m tests.test6
+
 .PHONY : gradient-descent
 gradient-descent:
 	python3 gradient-descent.py
-
-
 
 .PHONY : collision_checker
 collision_checker:
@@ -30,6 +34,6 @@ collision_checker:
 matrix_rain:
 	python3 matrix_rain.py
 
-.PHONY : binary_separation
+.PHONY : binsep
 binary_separation:
 	python3 binary_separation.py

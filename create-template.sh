@@ -1,14 +1,23 @@
-if [ -z $1 ]; then
+if [ -z "$1" ]; then
 	echo "no file name mentioned..."
 	exit
 fi
 
-file_name="$*"
+file_name="$1"
 
 if [ -f "$file_name" ]; then
     echo "file exists..."
     exit
 fi
+
+if [ -z "$2" ]; then
+	echo "no alias mentioned!"
+    alias_name="${file_name%.*}"
+else
+    alias_name="$2"
+fi
+
+echo "setting $alias_name as alias....."
 
 
 
@@ -129,6 +138,6 @@ if __name__ == \"__main__\":
 " > $file_name
 
 
-filename_no_ext="${file_name%.*}"
+
 printf "\n\n.PHONY : %s\n%s:\n\tpython3 %s" \
 "$filename_no_ext" "$filename_no_ext" "$file_name" >> Makefile
