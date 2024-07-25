@@ -128,3 +128,17 @@ def polygon_colision(polygon1 : Union[List, np.ndarray], polygon2 : Union[List[f
             return False
     
     return True
+
+def circle_approximation(origin, direction, radii, angR, angL, n=3):
+    angL, angR = np.deg2rad((angL, angR)) - np.deg2rad(direction)
+    x1, y1 = origin
+    
+    points = np.empty((n + 1, 2))
+    points[0] = (x1, y1)
+
+    for i, angle in enumerate(np.linspace(angL, angR, n), 1):
+        x = radii * np.sin(angle) + x1
+        y =  y1 - radii * np.cos(angle)
+        points[i] = (x, y)
+
+    return points

@@ -26,7 +26,7 @@ app = frame.Surface(0, 0, WIDTH, HEIGHT)
 pen = shape.AShape(app)
 
 font = pygame.font.SysFont('CodeNewRoman Nerd Font', 14)
-input_box = rio.InputBox(app, font, c.BLACK, (200, 200, 200), (0, HEIGHT-30, WIDTH, 30), (c.BLACK, 1))
+input_box = rio.InputBox(app, (0, HEIGHT-30, WIDTH, 30))
 # -------------- Global Variable section ---------------
 
 X = np.zeros(0)
@@ -91,18 +91,16 @@ def main_loop():
         pen.Acircle(x, y, 5)
     
 
-    rio.println(app, f'Iteration no : {iteration}', (10, HEIGHT-150))
-    rio.println(app, 'Equation, y = a + bx', (10, HEIGHT-135))
-    rio.println(app, f'learning rateA = {learning_rateA}', (10, HEIGHT-120))
-    rio.println(app, f'learning rateB = {learning_rateB}', (10, HEIGHT-105))
-    rio.println(app, f'a = {a:.4f}', (10, HEIGHT-90))
-    rio.println(app, f'b = {b:.4f}', (10, HEIGHT-75))
+    rio.println(app, f'Iteration no : {iteration}', (10, 10))
+    rio.println(app, f'learning rateA = {learning_rateA}', (10, 25))
+    rio.println(app, f'learning rateB = {learning_rateB}', (10, 40))
+    sign = '+' if b >=0 else '-'
+    rio.println(app, f'Equation, y = {a:.3f} {sign} {abs(b):.3f}x', (10, 55))
 
     # *******************************************************************
     # ----------------------- input processing --------------------------
     # *******************************************************************
-    text = input_box.show()
-    if text:
+    if text := input_box.getInput():
         text = list(map(lambda t : t.strip(), text.split('=')))
         if text[0] == 'rateA':
             learning_rateA = float(text[1])
@@ -122,6 +120,7 @@ def main_loop():
             iteration = 0
 
 
+    input_box.show()
     # update window or chaging the current frame by next one
     # this is the end step of this function
     win.blit_surface(app)
@@ -134,31 +133,21 @@ def event_handler():
     global X, Y, a, b, learning_rateA, learning_rateB, iteration
     # Process events within the loop
     for event in win.events():
-        if win.check_for_quit(event):
+        if win.checkForQuit(event):
             return
 
-        input_box.is_focused(event)
+        input_box.update(event)
 
         if event.type == pygame.MOUSEBUTTONDOWN and not input_box.focused:
             mx, my = utl.mouse()
             X = np.append(X, mx)
             Y = np.append(Y, my)
-            a, b = 0, 0
+            # a, b = 0, 0
             iteration = 0
 
         key = win.key_pressed(event)
-        if key:
-            if input_box.focused:
-                input_box.update(event)
-            elif key == frame.KEYS['up']:
-                pass
-            elif key == frame.KEYS['down']:
-                pass
-            elif key == frame.KEYS['left']:
-                pass
-            elif key == frame.KEYS['right']:
-                pass
-            elif key == frame.KEYS['c']:
+        if key and not input_box.focused:
+            if key == frame.KEYS['c']:
                 X = np.zeros(0)
                 Y = np.zeros(0)
                 a, b = 0, 0
@@ -177,6 +166,6 @@ def event_handler():
 
 
 if __name__ == "__main__":
-    win.set_events_handlers(event_handler)
+    win.setEventsHandler(event_handler)
     main_loop()
 

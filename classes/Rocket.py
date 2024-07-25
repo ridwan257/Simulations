@@ -5,27 +5,62 @@ import classes.obstracle
 from classes.veichle import VeichleA
 from lib import rmath
 from lib.templates import dnalib
-from lib import utils as utl
+from lib import color
+# from lib import utils as utl
 
 
 class Rocket:
     def __init__(self, texture, x=150, y=150):
         self.image :pygame.Surface = texture
-        self.position = np.array([x, y], dtype=np.float64)
-        self.velocity = np.array([0., -1.])
-        self.acc = np.zeros(2)
-        self.maxV = 6
-        self.maxF = 0.4
+        self.counter = 0
+        self.paths = []
+        self.collapsed = False
         self.dna = RocketDNA()
         self.dna.neucleotide = 'lpuqrts'
-        self.collapsed = False
+
+        self.position = np.array([x, y], dtype=np.float64)
+        self.velocity = np.array([0., 0.])
+        self.acc = np.zeros(2)
+        self.angle = 0
+        self.maxV = 6
+        self.maxF = 0.4
+        
         
     def update(self):
-        if not self.collapsed:
-            self.velocity += self.acc
-            self.velocity = rmath.limit(self.velocity, self.maxV)
-            self.position += self.velocity
-            self.acc *= 0
+        self.velocity += self.acc
+        self.velocity = rmath.limit(self.velocity, self.maxV)
+        self.position += self.velocity
+        self.acc *= 0
+        self.paths.append(self.position.copy()) 
+
+        self.angle = rmath.heading(self.velocity)
+        
+        
+    def update2(self, direction):
+        a = np.deg2rad(-self.angle)
+        
+        self.position[0] += direction * self.maxV * np.sin(a)
+        self.position[1] -= direction * self.maxV * np.cos(a)
+
+        # self.paths.append(self.position.copy())
+        
+        
+        
+
+    def brake(self):
+        if np.any(np.abs(self.velocity) > 0.01) :
+            self.velocity *= 0.01
+
+    def damp(self):
+        if ( self.counter == 0 and 
+            np.any(np.abs(self.velocity) > 0.01) ):
+            self.velocity *= .8
+
+        self.counter += 1
+        if self.counter == 5:
+            self.counter = 0
+        
+        
 
     def apply_force(self, force):
         self.acc += force
@@ -38,9 +73,17 @@ class Rocket:
         steer = rmath.limit(steer, self.maxF) * damping
         return steer
     
+    def steer_at(self, desired):
+        desired = rmath.set_mag(desired, self.maxV)
+
+        steer = desired - self.velocity
+        steer = rmath.limit(steer, self.maxF)
+        return steer
+
+
     def boundary2(self, w, h, d=20, damping=1):
         x, y = self.position
-        target = np.array([w/2, h/2])  
+        # target = np.array([w/2, h/2])  
 
         if x < d:
             desired = np.array([self.maxV, self.velocity[1]])
@@ -69,7 +112,7 @@ class Rocket:
 
         return force
 
-    def calculate_fitness(self, target, counter):
+    def calculate_fitness(self, target):
         dist = np.linalg.norm(self.position - target)
         fitness = rmath.linear_map(dist, 0, 1000, 50, 0)
         if not self.collapsed:
@@ -89,31 +132,71 @@ class Rocket:
             self.collapsed = True
 
 
+    def summary(self):
+        print('---------------------')
+        print(f'{self.collapsed=}')
+        print(f'{self.position=}')
+        print(f'{self.velocity=}')
+        print(f'{self.acc=}')
+        print(f'{self.angle=}')
+        print('------ Coordinate -------')
+        print(self.image.get_bounding_rect())
+        print(self.image.get_rect())
+
+        # r = 50
+        # n = 10
+        # for i, angle in enumerate(np.linspace(-45, 45, n)):
+        #     x2 = r * np.sin(angle) + self.position[0]
+        #     y2 = r * np.cos(angle) + self.position[1]
+        #     print(angle, '->', *self.position, x2, y2)
+
+        
+    def draw_ray(self, pen, objs):
+        r = 100
+        n = 25
+        colided = False
+
+        points = rmath.circle_approximation(self.position, self.angle, r, -45, 45, 5)
         
 
-
-    # def eat(self, foods):
-    #     print(foods)
-    #     temp_dist = np.inf
-    #     nearest_food = -1
-    #     for i, food in enumerate(foods):
-    #         dist = np.linalg.norm(self.position - food)
-    #         if dist < temp_dist:
-    #             temp_dist = dist
-    #             nearest_food = i
+        for obj in objs:
+            colided = rmath.polygon_colision(obj.boundary(), points)
+            if colided:
+                break
         
-    #     print(nearest_food, '|', temp_dist)
-    #     if temp_dist < 5:
-    #         del foods[nearest_food]
-    #     elif nearest_food > -1:
-    #         self.seek(foods[nearest_food])
-    #     else:
-    #         self.velocity *= 0
-    #         # pass
+        self.collapsed = colided
 
-    def show(self, window):
-        angle = rmath.heading(self.velocity)
-        window.render(self.image, angle, self.position[0], self.position[1])
+        pen.no_fill()
+        if colided : pen.stroke(color.RED)
+        else : pen.stroke(color.GREEN_YELLOW)
+        pen.polygon(points)
+
+        
+        
+
+    def show(self, pen):
+        if len(self.paths) > 50:
+            del self.paths[0:2]
+        if self.collapsed:
+            i = 0
+            while self.paths and i < 5:
+                self.paths.pop(0)
+                i += 1
+        
+
+        pen.stroke((255, 0, 70, 100))
+        # for i in range(0, len(self.paths)-1):
+        #     x1, y1 = self.paths[i]
+        #     x2, y2 = self.paths[i+1]
+        #     # pen.line(x1, y1, x2, y2)
+
+        temp_image = pygame.transform.rotate(self.image, self.angle)
+        rect = temp_image.get_rect(center=self.position)
+
+        pen.no_fill()
+        pen.rect(*rect)
+
+        pen.screen.render(self.image, self.angle, self.position[0], self.position[1])
 
 
 
@@ -131,7 +214,7 @@ class RocketDNA(dnalib.DNA):
 
     def __init__(self):
         super().__init__()
-        self.neucleotide = 'slpuqrt'
+        self.neucleotide = 'slpuqrtb'
     
     @staticmethod
     def cross(dna1, dna2, mutation_rate):
@@ -171,7 +254,9 @@ def reproduce(population, initial_position, rate):
         x0 += np.random.normal(0, 3)
         child = Rocket(texture, x0, y0)
         child.dna.load(RocketDNA.cross(
-            sorted_population[i].dna, sorted_population[j].dna, rate
+            sorted_population[i].dna, 
+            sorted_population[j].dna, 
+            rate
         ))
         child.velocity = np.zeros(2)
         children.append(child)

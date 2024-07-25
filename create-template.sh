@@ -81,7 +81,7 @@ def main_loop():
     
     # reset the bacground color so that 
     # previous frame drawing don't pressent
-    app.background(clr.POWDER_BLUE)
+    app.background(clr.WHITE_SMOKE)
     # ui.background(clr.LIGHT_GRAY)
     # completed backgound fill
 
@@ -109,7 +109,7 @@ def event_handler():
 
     # Process events within the loop
     for event in win.events():
-        if win.check_for_quit(event):
+        if win.checkForQuit(event):
             return
 
         key = win.key_pressed(event)
@@ -133,11 +133,11 @@ def event_handler():
 
 
 if __name__ == \"__main__\":
-    win.set_events_handlers(event_handler)
+    win.setEventsHandler(event_handler)
     main_loop()
 " > $file_name
 
 
 
 printf "\n\n.PHONY : %s\n%s:\n\tpython3 %s" \
-"$filename_no_ext" "$filename_no_ext" "$file_name" >> Makefile
+"$alias_name" "$alias_name" "$file_name" >> Makefile

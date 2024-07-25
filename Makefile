@@ -37,3 +37,7 @@ matrix_rain:
 .PHONY : binsep
 binary_separation:
 	python3 binary_separation.py
+
+.PHONY : bird
+bird:
+	python3 flocking_birds.py

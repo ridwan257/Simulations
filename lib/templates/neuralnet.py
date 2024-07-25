@@ -1,9 +1,12 @@
 import numpy as np
-from lib import rmath
-from lib.utils import to_string
 import re
 
-c = rmath.c
+def c(*args, **argv):
+    return np.array(args, **argv)
+
+def to_string(vector, digit=3, sep=' '):
+    text = np.array2string(vector, precision=digit, 
+                           suppress_small=True, separator=sep)
 
 def sigmoid(x):
     return 1 / ( 1 + np.exp(-x) )

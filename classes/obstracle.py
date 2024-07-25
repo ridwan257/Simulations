@@ -8,6 +8,15 @@ class SolidBody:
         self.h = h
         self.color = color
 
+    def boundary(self):
+        x1, y1 = self.position
+        return [
+            (x1, y1),
+            (x1+self.w, y1),
+            (x1 + self.w, y1 + self.h),
+            (x1, y1 + self.h),  
+        ]
+
     def show(self, pen:lib.shape.AShape) -> None:
         pen.fill(self.color)
         pen.no_stroke()

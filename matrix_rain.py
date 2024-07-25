@@ -1,9 +1,7 @@
-import pygame
+# import pygame
 import numpy as np
 from lib import color as clr
 from lib import frame
-from lib import shape
-from lib import rmath
 from lib import utils as utl
 from lib import rio
 from classes.katakana import WaterStream
@@ -67,7 +65,7 @@ def event_handler():
 
     # Process events within the loop
     for event in win.events():
-        if win.check_for_quit(event):
+        if win.checkForQuit(event):
             return
 
         key = win.key_pressed(event)
@@ -85,8 +83,7 @@ def event_handler():
 
 
 
-
 if __name__ == "__main__":
-    win.set_events_handlers(event_handler)
+    win.setEventsHandler(event_handler)
     main_loop()
 
