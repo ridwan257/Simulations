@@ -7,8 +7,10 @@ def c(*args, **argv):
 def to_string(vector, digit=3, sep=' '):
     text = np.array2string(vector, precision=digit, 
                            suppress_small=True, separator=sep)
+    return text
 
 def sigmoid(x):
+    x = np.clip(x, -500, 500)
     return 1 / ( 1 + np.exp(-x) )
 
 def dsigmoid(y):
@@ -23,7 +25,7 @@ def sign(x):
     else:
         return -1
 
-def binary(data, threshold=0.5):
+def toBinary(data, threshold=0.5):
     return [0 if n < threshold else 1 for n in data]
 
 
@@ -66,7 +68,7 @@ class Perceptron:
             f.write(f'{text}\n')
     
     @staticmethod
-    def load_from_file(filename):
+    def loadFromFile(filename):
         with open(filename, 'r') as f:
             lines = f.readlines()
             lines = list(map(lambda l : l.strip(), lines))
@@ -145,16 +147,16 @@ class NeuralNetwork:
             f.write(f'{self.total_i} {self.total_h} {self.total_o}\n')
             f.write(f'{self.learning_rate}\n')
 
-            text = np.array2string(self.hidden_weights, separator=",")
+            text = np.array2string(self.hidden_weights, separator=",", max_line_width=np.inf, threshold=np.inf)
             text = re.sub(r'\n', '', text)
             f.write(f'{text}\n')
 
-            text = np.array2string(self.output_weights, separator=",")
+            text = np.array2string(self.output_weights, separator=",", max_line_width=np.inf, threshold=np.inf)
             text = re.sub(r'\n', '', text)
             f.write(f'{text}\n')
     
     @staticmethod
-    def load_from_file(filename):
+    def laodFromFile(filename):
         with open(filename, 'r') as f:
             lines = f.readlines()
             lines = list(map(lambda l : l.strip(), lines))

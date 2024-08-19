@@ -166,7 +166,7 @@ class Rocket:
         
         self.collapsed = colided
 
-        pen.no_fill()
+        pen.noFill()
         if colided : pen.stroke(color.RED)
         else : pen.stroke(color.GREEN_YELLOW)
         pen.polygon(points)
@@ -193,7 +193,7 @@ class Rocket:
         temp_image = pygame.transform.rotate(self.image, self.angle)
         rect = temp_image.get_rect(center=self.position)
 
-        pen.no_fill()
+        pen.noFill()
         pen.rect(*rect)
 
         pen.screen.render(self.image, self.angle, self.position[0], self.position[1])

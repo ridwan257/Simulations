@@ -59,7 +59,7 @@ pen = shape.AShape(app)
 # Sruface for other text, button : 400*200
 # ui = frame.Surface(0, app.h, win.w, win.h - app.h)
 # hiding borer of ui surface
-# ui.border({'hide':True})
+# ui.hideBorder()
 
 # -------------- Simulation Controling Variable Section ---------------
 

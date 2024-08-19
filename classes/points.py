@@ -33,7 +33,7 @@ class Point:
             self.label = 0
 
     def show(self, pen):
-        pen.no_fill()
+        pen.noFill()
         if self.label == 0:
             pen.stroke(color.HOT_PINK)
         elif self.label == 1:
@@ -42,7 +42,7 @@ class Point:
 
     def show_prediction(self, pen, new_label):
         if self.sh : print(f'{self.x=:.4f}, {self.y=:.4f}| {self.label=} |{new_label=}', end=' ')
-        pen.no_stroke()
+        pen.noStroke()
         if self.label == new_label:
             if self.sh : print('true')
             pen.fill(color.GREEN)

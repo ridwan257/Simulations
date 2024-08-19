@@ -35,10 +35,10 @@ class Shape:
     def strokeWeight(self, n):
         self._stroke_weight = n
     
-    def no_fill(self):
+    def noFill(self):
         self._fill = False
 
-    def no_stroke(self):
+    def noStroke(self):
         self._stroke = False
 
     def line(self, x1, y1, x2, y2):

@@ -9,7 +9,10 @@ class RSurface():
         self.w = w
         self.h = h
 
-    def blit_surface(self, *screens):
+    def blit(self, surface, position):
+        self.surface.blit(surface, position)
+
+    def blitSurfaces(self, *screens):
         for screen in screens:
             self.surface.blit(screen.surface, screen.pos)
 

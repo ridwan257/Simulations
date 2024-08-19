@@ -56,14 +56,14 @@ for i in range(total_points):
     points.append(p)
 
 
-print('------------------- Initial Condition ---------------------')
-print('brain weight', brain.weights)
-for pt in points:
+# print('------------------- Initial Condition ---------------------')
+# print('brain weight', brain.weights)
+# for pt in points:
 
-    prob = brain.think([pt.x, pt.y]) 
-    new_label = 1 if prob > 0.5 else 0
+#     prob = brain.think([pt.x, pt.y]) 
+#     new_label = 1 if prob > 0.5 else 0
 
-    print(f'{pt.x=:.4f}, {pt.y=:.4f}| {pt.label=} | {prob=:.4f} |{new_label=}')
+#     print(f'{pt.x=:.4f}, {pt.y=:.4f}| {pt.label=} | {prob=:.4f} |{new_label=}')
 
 
 
@@ -93,7 +93,7 @@ def main_loop():
         pt.show_prediction(pen, new_label)
         pt.sh = False
 
-    pen.no_fill()
+    pen.noFill()
     pen.stroke(clr.BLACK)
     pen.Aline(tr.x(0), tr.y(f(0)), tr.x(1), tr.y(f(1)))
 
@@ -125,35 +125,11 @@ def main_loop():
 
 
 # -------------- handling keyboard/mouse event -----------
-def event_handler():
-    # global
 
-    # Process events within the loop
-    for event in win.events():
-        if win.check_for_quit(event):
-            return
-
-        key = win.key_pressed(event)
-        if key:
-            if key == frame.KEYS['up']:
-                pass
-            elif key == frame.KEYS['down']:
-                pass
-            elif key == frame.KEYS['left']:
-                pass
-            elif key == frame.KEYS['right']:
-                pass
-            elif key == frame.KEYS['s']:
-                pass
-            elif key == frame.KEYS['j']:
-                pass
-            elif key == frame.KEYS['p']:
-                pass
 
 
 
 
 if __name__ == "__main__":
-    win.set_events_handlers(event_handler)
     main_loop()
 

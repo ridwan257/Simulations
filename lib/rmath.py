@@ -2,6 +2,44 @@ from typing import List, Union
 import numpy as np
 
 
+
+class Vec2d(np.ndarray):
+    def __new__(cls, x=0, y=0):
+        obj = np.asarray([x, y], dtype=np.float64).view(cls)
+        obj._x = x
+        obj._y = y
+        return obj
+    
+    def __init__(self, x=0, y=0): ...
+    
+    def __array_finalize__(self, obj):
+        # This method is called to finalize the creation of the array
+        if obj is None: return
+        # Copy over attributes from the original array if necessary
+        self._x = getattr(obj, '_x', 0)
+        self._y = getattr(obj, '_y', 0)
+
+    @property
+    def x(self): return self._x
+    @x.setter 
+    def x(self, value): 
+        self._x = value
+        self[0] = value
+
+    @property
+    def y(self): return self._y
+    @y.setter 
+    def y(self, value): 
+        self._y = value
+        self[1] = value
+
+    def heading(self):
+        return np.arctan2(self._y, self._x)
+    
+    
+
+
+
 def c(*args, **keys):
     return np.array(args, **keys)
 

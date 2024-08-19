@@ -1,7 +1,7 @@
 from sys import exit
 import pygame
 import numpy as np
-from lib.templates.abstract import RSurface
+from templates.abstract import RSurface
 
 
 # const
@@ -48,6 +48,9 @@ KEYS = {
 #             pygame.quit()
 #             exit()
 
+def createSurface(w, h):
+    return pygame.Surface((w, h), pygame.SRCALPHA)
+
 class Window(RSurface):
     def __init__(self, w=400, h=300, title='Hello World'):
         super().__init__(0, 0, w, h, False)
@@ -64,6 +67,8 @@ class Window(RSurface):
         pygame.display.set_caption(title)
         self.__events = self.__default_event_handler
 
+    def __call__(self):
+        return self.surface
 
     @property
     def framerate(self):
@@ -138,7 +143,8 @@ class Surface(RSurface):
             self.surface = self.surface.convert_alpha()
             self.surface.fill((0, 0, 0, 0))
             
-        
+    def __call__(self):
+        return self.surface
 
     def background(self, color):
         self.surface.fill(color)
@@ -149,8 +155,8 @@ class Surface(RSurface):
                              (0,0,self.w,self.h), 
                              self.border_info["width"])
 
-    def show_border(self): self.border_info["hide"] = False
-    def hide_border(self): self.border_info["hide"] = True
+    def showBorder(self): self.border_info["hide"] = False
+    def hideBorder(self): self.border_info["hide"] = True
 
     def set_pos(self, x, y):
         self.pos = (x, y)

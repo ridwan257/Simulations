@@ -1,6 +1,7 @@
+from typing import Union
 import pygame
 import numpy as np
-from lib import rmath
+from lib import frame, rmath
 from lib import utils as utl
 
 pygame.font.init()
@@ -61,7 +62,8 @@ class InputBox():
 	# font = (name, size)
 	def __init__(self, surface, box_info, /, *, 
 		font_name='Consolas', font_size=14,	  
-		font_color=(0, 0, 0), bg_color=(255, 255, 255), 
+		font_color=(0, 0, 0), bg_color=(255, 255, 255),
+		border_color = (0, 0, 0),
 		border_width=1
 	) -> None:
 		"""
@@ -74,6 +76,7 @@ class InputBox():
 		self.box_info = box_info
 		self.border_width = border_width
 		self.box_bg_color = bg_color
+		self.border_color = border_color
 		
 		self.font_name = font_name
 		self.font_height = font_size
@@ -99,7 +102,8 @@ class InputBox():
 
 	def changeFont(self, font_name, size): ...
 
-	def is_focused(self, event):
+
+	def _is_focused(self, event):
 		mx, my = utl.mouse() - self.surface.pos
 		x1, y1, w, h = self.box_info
 		x2, y2 = w + x1, h + y1
@@ -109,6 +113,8 @@ class InputBox():
 				self.triggered = False
 			else:
 				self.focused = False
+		
+
 		if event.type == pygame.KEYDOWN and not self.focused:
 			if event.key == pygame.K_SEMICOLON and pygame.key.get_mods() & pygame.KMOD_SHIFT:
 				self.focused = True
@@ -117,6 +123,7 @@ class InputBox():
 			
 
 	def update(self, event):
+		self._is_focused(event)
 		if self.focused:
 			if not self.__onfocus_using_colon:
 				if event.type == pygame.KEYDOWN:
@@ -131,10 +138,7 @@ class InputBox():
 						self.buffer += event.unicode
 			
 			else:
-				self.__onfocus_using_colon = False
-		else:
-			self.is_focused(event)
-			
+				self.__onfocus_using_colon = False	
 
 	def getInput(self):
 		command = False
@@ -144,8 +148,16 @@ class InputBox():
 		
 		return command
 
+	def setValue(self, text):
+		self.buffer = text
+	
+	def getValue(self):
+		return self.buffer
+
 	def show(self):
 		pygame.draw.rect(self.surface.surface, self.box_bg_color, self.box_info)
+		pygame.draw.rect(self.surface.surface, self.border_color, self.box_info, self.border_width)
+		
 		if len(self.buffer) == 0:
 			txt = self.holder["text"]
 		else:
@@ -260,3 +272,153 @@ class Slider:
 			self.surface.surface, self.circle_color, 
 			(self.offset, self.y + self.h//2), self.r
 		)
+
+
+# *******************************************************************
+# ----------------------------- Button Class -------------------------
+# *******************************************************************
+
+class Button:
+	def __init__(
+		self, screen, button_info, value, /, *,
+		bg_color = (105, 206, 235, 100), border_color = (0, 0, 0),
+		border_width = 1, border_radius = 8,
+		font_color = (0, 0, 0), size = 14, bold = False
+		
+	) -> None:
+		self.screen = screen
+		self.x, self.y, self.w, self.h = button_info
+		self._button_surface = frame.createSurface(self.w, self.h)
+
+		self._properties = {
+			'value' : value,
+			'bg_color' : bg_color, 
+			'border_color' : border_color,
+			'border_width' : border_width, 
+			'border_radius' : border_radius,
+			'font_color' : font_color, 
+			'size' : size,
+			'bold' : bold,
+			'show_border' : True
+		}
+
+		self.__default_properties = self._properties.copy()
+		self._hover_properties = self._properties.copy()
+
+		self.focused = False
+		self.triggered = False
+		self.hover_effect_done = False
+
+		self._font = load_font(size=size)
+		self._font.set_bold(bold)
+		
+		self.setValue(value)
+		self._decorate_button_surface()
+
+
+	def _change_property(self, name, value):
+		self._properties[name] = value
+		self.__default_properties[name] = value
+		self._hover_properties[name] = value
+
+	def showBorder(self) : 
+		self._properties['show_border'] = True
+		self._properties['show_border'] = True
+		self._decorate_button_surface()
+	def hideBorder(self) : 
+		self._properties['show_border'] = False
+		self._decorate_button_surface()
+
+	def setBoldText(self, bold : Union[bool, None] = None):
+		if bold is None:
+			bold = self._properties['bold']
+		self._font.set_bold(bold)
+		self.setValue()
+		self._decorate_button_surface()
+
+	def setFontSize(self, size : Union[int, None] = None):
+		if size is None:
+			size = self._properties['size']
+		else:
+			self._change_property('size', size)
+
+		self._font = load_font(size=size)
+		self.setValue()
+		self._decorate_button_surface()
+
+
+	def setValue(self, text : Union[str, None] = None):
+		if text is None:
+			text = self._properties['value']
+		else:
+			self._change_property('value', text)
+
+		self._text_surface = self._font.render(text, True,  self._properties['font_color'])
+		self._font_info = self._font.size(text)
+		self._font_xy = (
+			(self.w - self._font_info[0]) / 2,
+			(self.h - self._font_info[1]) / 2 
+		)
+		self._decorate_button_surface()
+	
+	def setHoverProperties(self, properties):
+		self._hover_properties |= properties
+
+	def clicked(self):
+		if self.triggered:
+			self.triggered = False
+			return True
+		else:
+			return False	
+
+	def update(self, event):
+		x0, y0 = utl.mouse() - (self.x, self.y)
+		if x0 > 0 and x0 < self.w and y0 > 0 and y0 < self.h:
+			self.focused = True
+			if event.type == pygame.MOUSEBUTTONDOWN:
+				self.triggered = True
+		else:
+			self.focused = False
+
+	def _on_hover_function(self):
+		if self.focused and not self.hover_effect_done:
+			self._properties |= self._hover_properties
+			self.setFontSize()
+			self.setBoldText()
+			self.setValue()
+			self._decorate_button_surface()
+			self.hover_effect_done = True
+			# print('doing hover - ', np.random.randint(0, 999))
+
+		elif not self.focused and self.hover_effect_done:
+			self.hover_effect_done = False
+			self._properties |= self.__default_properties
+			self.setFontSize()
+			self.setBoldText()
+			self.setValue()
+			self._decorate_button_surface()
+			# print('no hover - ', np.random.randint(0, 999))
+		
+
+	def _decorate_button_surface(self):
+		pygame.draw.rect(self._button_surface, self._properties['bg_color'], (0, 0, self.w, self.h), 
+				   border_bottom_left_radius=self._properties['border_radius'], 
+				   border_top_left_radius= self._properties['border_radius'],
+				   border_top_right_radius= self._properties['border_radius'],
+				   border_bottom_right_radius = self._properties['border_radius'])
+
+		if self._properties['show_border']:
+			pygame.draw.rect(self._button_surface, self._properties['border_color'], (0, 0, self.w, self.h), 
+					width=self._properties['border_width'],
+					border_bottom_left_radius=self._properties['border_radius'], 
+					border_top_left_radius= self._properties['border_radius'],
+					border_top_right_radius= self._properties['border_radius'],
+					border_bottom_right_radius = self._properties['border_radius'])
+		
+		self._button_surface.blit(self._text_surface, self._font_xy)
+	
+
+	def show(self):
+		self._on_hover_function()
+		self.screen.blit(self._button_surface, (self.x, self.y))
+		

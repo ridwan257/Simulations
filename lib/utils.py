@@ -55,4 +55,33 @@ def toggle(value : bool)->bool:
         return False
     return True
 
+def RGBtoGrayscale(value):
+    r = (value >> 16) & 0xFF
+    g = (value >> 8) & 0xFF
+    b = (value >> 0) & 0xFF
+
+    return 0.299 * r + 0.587 * g + 0.114 * b
+
+RGBtoGrayscale = np.vectorize(RGBtoGrayscale)
+
+def toRGB(value):
+    r = (value >> 16) & 0xFF
+    g = (value >> 8) & 0xFF
+    b = (value >> 0) & 0xFF
+
+    return (r, g, b)
+
+def getGrayScaleValue(surface):
+    """
+    Convert a surface into array containing grayscale value
+    """
+    arr = pygame.surfarray.array2d(surface)
+    return RGBtoGrayscale(arr)
+
+def grayScaleToSurface(surface : pygame.Surface, array : np.ndarray):
+    """
+    Copy a grascale color value array to a surface
+    """
+    rgb_array = np.stack((array, array, array), axis=-1)
+    pygame.surfarray.blit_array(surface, rgb_array)
 
