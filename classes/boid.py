@@ -1,5 +1,5 @@
 import numpy as np
-from lib.templates.matter import Agent2D
+from templates.matter import Agent2D
 from lib import color
 
 
@@ -9,8 +9,8 @@ class Boid(Agent2D):
         self.position[:] = (x, y)
         self.w = w
         self.h = h
-        self.maxV = 6
-        self.maxF = 0.8
+        self.maxV = 5
+        self.maxF = 0.6
         self.perception = 100
         self.__vertices = [
             (w/2, 0), (w, h), (0, h)
@@ -78,7 +78,7 @@ class Boid(Agent2D):
         return force
 
     def show(self, pen):
-        pen.no_fill()
+        pen.noFill()
         pen.stroke(color.HOT_PINK)
         # pen.circle(self.position, self.perception)
 
@@ -88,7 +88,7 @@ class Boid(Agent2D):
 
             # pen.line(x1, y1, x2, y2)
 
-        pen.no_stroke()
+        pen.noStroke()
         pen.fill(color.CADET_BLUE)
         pen.Apolygon(*self.position, self.w, self.h, self.__vertices, self.angle)
         

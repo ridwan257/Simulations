@@ -7,7 +7,7 @@ from lib import shape
 from lib import rmath
 from lib import utils as utl
 from lib import rio
-from lib.templates.neuralnet import NeuralNetwork
+from templates.neuralnet import NeuralNetwork
 
 # from os import environ
 # for key in environ.keys() : print(key, '->', environ[key])

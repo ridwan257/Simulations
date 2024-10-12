@@ -34,13 +34,13 @@ pen = shape.AShape(app)
 # Sruface for other text, button : 400*200
 ui = frame.Surface(0, app.h, win.w, win.h - app.h)
 # hiding borer of ui surface
-ui.hide_border()
+ui.hideBorder()
 
 # -------------- Simulation Controling Variable Section ---------------
 
 # ------------------ Preload Images and Others Section ----------------------
 fontObj = rio.load_font(size=16)
-input_box = rio.InputBox(ui, fontObj, clr.BLACK, clr.PINK, (0, 0, ui.w, ui.h))
+input_box = rio.InputBox(ui, (0, 0, ui.w, ui.h), font_color=clr.BLACK, bg_color=clr.PINK )
 sliderA = rio.Slider(app, 0.1, 3, 1.2, w = 120, r=6, h = 1, bar_color=(0, 0, 0))
 sliderC = rio.Slider(app, 0.1, 3, 0.6, w = 120, r=6, h = 1, bar_color=(0, 0, 0))
 sliderS = rio.Slider(app, 0.1, 3, 1, w = 120, r=6, h = 1, bar_color=(0, 0, 0))
@@ -97,7 +97,7 @@ def main_loop():
         agent.show(pen)
 
 
-    if text := input_box.get_input():
+    if text := input_box.getInput():
         text = rio.InputBox.process_cmd(text)
         print(text)
         if text[0] == 'factorA':
@@ -131,7 +131,7 @@ def main_loop():
     # update window or chaging the current frame by next one
     input_box.show()
     # this is the end step of this function
-    win.blit_surface(app, ui)
+    win.blitSurfaces(app, ui)
 
 
 

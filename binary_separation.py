@@ -7,7 +7,7 @@ from lib import rmath
 from lib import utils as utl
 from lib import rio
 from classes.points import Point, T
-from lib.templates import neuralnet as nn
+from templates import neuralnet as nn
 # from os import environ
 # environ['SDL_VIDEO_WINDOW_POS'] = f"100,100"
 
@@ -120,7 +120,7 @@ def main_loop():
 
     # update window or chaging the current frame by next one
     # this is the end step of this function
-    win.blit_surface(app)
+    win.blitSurfaces(app)
 
 
 

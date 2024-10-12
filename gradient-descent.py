@@ -35,7 +35,7 @@ a = 0
 b = 0
 dJa = 0
 dJb = 0
-learning_rateA = 0.01
+learning_rateA = 0.05
 learning_rateB = 0.000001
 iteration = 0
 
@@ -86,7 +86,7 @@ def main_loop():
     pen.Aline(x1, y1, x2, y2)
 
     pen.fill(c.RED)
-    pen.no_stroke()
+    pen.noStroke()
     for x, y in zip(X, Y):
         pen.Acircle(x, y, 5)
     
@@ -123,7 +123,7 @@ def main_loop():
     input_box.show()
     # update window or chaging the current frame by next one
     # this is the end step of this function
-    win.blit_surface(app)
+    win.blitSurfaces(app)
 
 
 
