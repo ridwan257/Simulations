@@ -1,4 +1,3 @@
-from matrix_rain import PAUSE_SIMULATION
 import pygame
 import numpy as np
 from lib import color as col
