@@ -36,7 +36,7 @@ pen = shape.AShape(app)
 # -------------- Simulation Controling Variable Section ---------------
 rio.fontColor(col.ANTIQUE_WHITE)
 rio.fontSize(22)
-PUASE_SIMULATION = True
+PUASE_SIMULATION = False
 SHOW_INFO = False
 
 # ------------------ Preload Images and Others Section ----------------------
@@ -52,7 +52,7 @@ population = []
 generation_number = 0
 target_position = r.c(460, 120)
 candidate_index = []
-mutation_rate = 1
+mutation_rate = 2
 initial_position = r.c(WIDTH//3, HEIGHT-50)
 brick1 = Rocket.Brick((230, 300), 120, 15)
 brick2 = Rocket.Brick((380, 200), 200, 15)
