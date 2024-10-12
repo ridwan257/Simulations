@@ -19,7 +19,7 @@ class SolidBody:
 
     def show(self, pen:lib.shape.AShape) -> None:
         pen.fill(self.color)
-        pen.no_stroke()
+        pen.noStroke()
         pen.rect(*self.position, self.w, self.h)
     
 

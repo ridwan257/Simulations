@@ -39,7 +39,7 @@ FONT_OPT = {
 
 RIOFONT = pygame.font.SysFont(FONT_OPT['name'], FONT_OPT['size'])
 def fontColor(color):
-	global FONT_OPT
+	global FONT_OPT, RIOFONT
 	FONT_OPT["color"] = color
 
 def fontSize(size):

@@ -190,10 +190,14 @@ def main_loop():
         grayscale_array = utl.getGrayScaleValue(app.surface)
         grayscale_array /= 255
         grayscale_array = converTo25x25(grayscale_array)
-        file_name = f"./assets/guess_num/n4/demo{img_num}_25x25.np"
-        np.savetxt(file_name, grayscale_array)
-        print(f"demo{img_num}_25x25.np saved!")
-        img_num += 1
+        num = input_box.getValue()
+        if num:
+            file_name = f"./assets/guess_num/extra_data/demo{img_num}_{num}_25x25.np"
+            np.savetxt(file_name, grayscale_array)
+            print(f"demo{img_num}_{num}_25x25.np saved!")
+            img_num += 1
+        else:
+            print('error: enter number')
 
 
     

@@ -1,20 +1,48 @@
+from ctypes import sizeof
+from os import replace
 import numpy as np
 import pygame
 import classes
 import classes.obstracle
 from classes.veichle import VeichleA
 from lib import rmath
-from lib.templates import dnalib
+from templates import dnalib
 from lib import color
-# from lib import utils as utl
+from classes import obstracle
+
+
+class Brick(obstracle.SolidBody):
+    def __init__(self, pos, w, h):
+        super().__init__(pos, w, h)
+
+    def setTarget(self, target_position):
+        x0 = self.position[0] + self.w / 2
+        y0 = self.position[1] + self.h / 2
+
+        self.m = -1 * (target_position[0] - x0) / (target_position[1] - y0)
+        self.c = y0 - self.m * x0
+
+        self.target_sign = 1 if (
+            target_position[1] - self.m*target_position[0] - self.c
+        ) > 0 else -1
+    
+    def rocketSign(self, rocket):
+        rocket_sign = 1 if (
+            rocket.position[1] - self.m*rocket.position[0] - self.c
+        ) > 0 else -1
+
+        return rocket_sign * self.target_sign
+
+
 
 
 class Rocket:
     def __init__(self, texture, x=150, y=150):
-        self.image :pygame.Surface = texture
+        self.image : pygame.Surface = texture
         self.counter = 0
         self.paths = []
         self.collapsed = False
+        self.reached = False
         self.dna = RocketDNA()
         self.dna.neucleotide = 'lpuqrts'
 
@@ -22,7 +50,7 @@ class Rocket:
         self.velocity = np.array([0., 0.])
         self.acc = np.zeros(2)
         self.angle = 0
-        self.maxV = 6
+        self.maxV = 5
         self.maxF = 0.4
         
         
@@ -112,14 +140,39 @@ class Rocket:
 
         return force
 
-    def calculate_fitness(self, target):
+    def calculate_fitness(self, target, bricks):
         dist = np.linalg.norm(self.position - target)
-        fitness = rmath.linear_map(dist, 0, 1000, 50, 0)
-        if not self.collapsed:
-            fitness *= 2
-        else:
-            fitness *= 0.5
+
+        if dist < 16:
+            self.reached = True
+
+        dist_fitness = rmath.linear_map(dist, 0, 1000, 50, 0)
+        crossed_bricks = 0
+
+        fitness = dist_fitness
+
+        for brick in bricks:
+            sgn = brick.rocketSign(self)
+            fitness *= 2**sgn
+            crossed_bricks += sgn
+
+        if self.collapsed:
+            fitness /= 10
         
+        # if crossed_bricks == len(bricks):
+        if crossed_bricks > -1:
+            target_vector = np.subtract(target, self.position)
+            angle = rmath.heading(target_vector)
+            angle_diff = np.deg2rad(angle - self.angle)
+            res = np.cos(angle_diff)
+            # print(res)
+
+            if res > 0.98:
+                fitness *= crossed_bricks * rmath.linear_map(dist, 0, 100, 3, 1.2)
+            else: 
+                fitness /= 2
+            
+
         self.dna.fitness = fitness 
         
 
@@ -130,6 +183,8 @@ class Rocket:
 
         if x > x0 and x < x1 and y > y0 and y < y1:
             self.collapsed = True
+        # else:
+        #     self.collapsed = False
 
 
     def summary(self):
@@ -164,7 +219,7 @@ class Rocket:
             if colided:
                 break
         
-        self.collapsed = colided
+        # self.collapsed = colided
 
         pen.noFill()
         if colided : pen.stroke(color.RED)
@@ -172,29 +227,30 @@ class Rocket:
         pen.polygon(points)
 
         
-        
+    def drawPath(self, pen):
+        pen.stroke((252, 252, 3))
+        for i in range(0, len(self.paths)-1):
+            x1, y1 = self.paths[i]
+            x2, y2 = self.paths[i+1]
+            pen.line(x1, y1, x2, y2)
 
     def show(self, pen):
-        if len(self.paths) > 50:
-            del self.paths[0:2]
-        if self.collapsed:
-            i = 0
-            while self.paths and i < 5:
-                self.paths.pop(0)
-                i += 1
+        # if len(self.paths) > 50:
+        #     del self.paths[0:2]
+        # if self.collapsed:
+        #     i = 0
+        #     while self.paths and i < 5:
+        #         self.paths.pop(0)
+        #         i += 1
         
 
-        pen.stroke((255, 0, 70, 100))
-        # for i in range(0, len(self.paths)-1):
-        #     x1, y1 = self.paths[i]
-        #     x2, y2 = self.paths[i+1]
-        #     # pen.line(x1, y1, x2, y2)
+        
 
-        temp_image = pygame.transform.rotate(self.image, self.angle)
-        rect = temp_image.get_rect(center=self.position)
+        # temp_image = pygame.transform.rotate(self.image, self.angle)
+        # rect = temp_image.get_rect(center=self.position)
 
-        pen.noFill()
-        pen.rect(*rect)
+        # pen.noFill()
+        # pen.rect(*rect)
 
         pen.screen.render(self.image, self.angle, self.position[0], self.position[1])
 
@@ -218,13 +274,14 @@ class RocketDNA(dnalib.DNA):
     
     @staticmethod
     def cross(dna1, dna2, mutation_rate):
-        middle = dna1.length // 2
+        # middle = dna1.length // 2
+        middle = np.random.randint(1, dna1.length)
         new_seq = np.concatenate((
             dna1.seq[:middle], dna2.seq[middle:]
         ))
         if mutation_rate == 0: return new_seq
 
-        total_points = round((mutation_rate * dna1.length)/100)
+        total_points = round(mutation_rate * dna1.length)
         indices = np.random.choice(np.arange(0, dna1.length), total_points, replace=False)
         nts = np.random.choice(dna1.neucleotide, total_points)
         new_seq[indices] = nts
@@ -238,29 +295,72 @@ class RocketDNA(dnalib.DNA):
 
 
 def reproduce(population, initial_position, rate):
-    sorted_population = sorted(population,
-        key = lambda rocket : rocket.dna.fitness
-    )
-
+    total_pop = len(population)
     x0, y0 = initial_position
-    total_candidate = len(population) // 2 + 1
-    mates = dnalib.random_mates(total_candidate, len(population), True) + len(population) - total_candidate
     texture = population[0].image
     children = []
-    for i, j in mates:
-        # print()
-        # print(i, j)
-        # print(sorted_population[i].dna.get(), '|', sorted_population[j].dna.get())
-        x0 += np.random.normal(0, 3)
-        child = Rocket(texture, x0, y0)
+
+    # dividing rocket into two groups -
+    # 1. that reached target
+    # 2. nomral rocket
+    mating_pool_reached = []
+    mating_pool_mango = []
+    weights = [] # grabing fitness of mango rockets
+    for rkt in population:
+        if rkt.reached:
+            mating_pool_reached.append(rkt)
+        elif not rkt.collapsed:
+            mating_pool_mango.append(rkt)
+            weights.append(rkt.dna.fitness)
+
+    print()
+    print('reached -', len(mating_pool_reached), '| survived', len(mating_pool_mango))
+
+    # killing half of the population
+    if mating_pool_mango:
+        half = len(mating_pool_mango) // 2 + 1
+        mating_pool_mango = mating_pool_mango[:half]
+        weights = weights[:half]
+    
+    # printing stuff
+    print('candidate for next -', len(mating_pool_mango)+len(mating_pool_reached))
+    for x in weights: print(f'{x:.2f}', end=" ")
+    print()
+    
+    if weights:
+        weights = np.array(weights)
+        weights = weights / weights.sum()
+    
+    # for x in weights: print(f'{x:.3f}', end=" ")
+    # print()
+    p_reached = 0.85
+    # cumulative_rr = p_reached * p_reached
+    # cumulative_rm = 2 * p_reached * (1-p_reached) + cumulative_rr
+    # cumulative_mm = (1-p_reached) * (1-p_reached) + cumulative_rm
+    reached_weights = (p_reached, 1-p_reached)
+    
+    for i in range(total_pop):
+        ## main part selecting candidate mates
+        if not mating_pool_reached and mating_pool_mango:
+            mates = np.random.choice(mating_pool_mango, size=2, replace=True, p=weights)      
+        
+        elif mating_pool_reached and mating_pool_mango:
+            mate_mango = np.random.choice(mating_pool_mango)
+            mate_reached = np.random.choice(mating_pool_reached)
+            mates = np.random.choice([mate_reached, mate_mango], size=2, replace=True, p=reached_weights)
+        
+        elif not mating_pool_mango and mating_pool_reached:
+            mates = np.random.choice(mating_pool_reached, size=2, replace=True)
+
+        xi = np.random.normal(x0, 2)
+        child = Rocket(texture, xi, y0)
         child.dna.load(RocketDNA.cross(
-            sorted_population[i].dna, 
-            sorted_population[j].dna, 
+            mates[0].dna, 
+            mates[1].dna, 
             rate
         ))
         child.velocity = np.zeros(2)
         children.append(child)
-        # print(child.dna.get())
     
     return children
 
