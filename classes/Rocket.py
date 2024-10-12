@@ -1,10 +1,5 @@
-from ctypes import sizeof
-from os import replace
 import numpy as np
 import pygame
-import classes
-import classes.obstracle
-from classes.veichle import VeichleA
 from lib import rmath
 from templates import dnalib
 from lib import color
@@ -176,7 +171,7 @@ class Rocket:
         self.dna.fitness = fitness 
         
 
-    def check_obstracle(self, obstracle : classes.obstracle.SolidBody):
+    def check_obstracle(self, obstracle : obstracle.SolidBody):
         x, y = self.position
         x0, y0 = obstracle.position
         x1, y1 = obstracle.w+x0, obstracle.h+y0

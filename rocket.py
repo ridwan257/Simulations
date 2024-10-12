@@ -36,7 +36,7 @@ pen = shape.AShape(app)
 rio.fontColor(col.ANTIQUE_WHITE)
 rio.fontSize(22)
 PUASE_SIMULATION = False
-SHOW_INFO = False
+SHOW_INFO = True
 
 # ------------------ Preload Images and Others Section ----------------------
 bg = utl.image('./assets/image/space1.jpg', (app.w, app.h))
@@ -144,13 +144,13 @@ def main_loop():
         
         if not PUASE_SIMULATION : dna_counter += 1
 
-        if best_rocket is not None:
+        if best_rocket is not None and SHOW_INFO:
             pen.noFill()
-            # pen.stroke(col.YELLOW)
-            # pen.strokeWeight(2)
-            # pen.circle(*best_rocket.position, 16)
-            # best_rocket.drawPath(pen)
-            # best_rocket.show(pen)
+            pen.stroke(col.YELLOW)
+            pen.strokeWeight(2)
+            pen.circle(*best_rocket.position, 16)
+            best_rocket.drawPath(pen)
+            best_rocket.show(pen)
 
             dist = np.linalg.norm(best_rocket.position - target_position)
             # if dist < 16:
@@ -209,27 +209,27 @@ def event_handler():
             return
 
 
-        keys = pygame.key.get_pressed()
+        # keys = pygame.key.get_pressed()
 
-        if keys[frame.KEYS['w']]:
-            # rkt.steer_at((0, -1))
-            rkt.update2(1)
-            # rkt.position[1] -= 5
+        # if keys[frame.KEYS['w']]:
+        #     # rkt.steer_at((0, -1))
+        #     rkt.update2(1)
+        #     # rkt.position[1] -= 5
 
-        if keys[frame.KEYS['a']]:
-            rkt.angle += 5
+        # if keys[frame.KEYS['a']]:
+        #     rkt.angle += 5
 
-        if keys[frame.KEYS['s']]:
-            # rkt.steer_at((0, 1))
-            rkt.update2(-1)
+        # if keys[frame.KEYS['s']]:
+        #     # rkt.steer_at((0, 1))
+        #     rkt.update2(-1)
 
-        if keys[frame.KEYS['d']]:
-            rkt.angle -= 5
+        # if keys[frame.KEYS['d']]:
+        #     rkt.angle -= 5
 
-        if keys[frame.KEYS['left']]:
-            rkt.position[0] -= 5
-        if keys[frame.KEYS['right']]:
-            rkt.position[0] += 5
+        # if keys[frame.KEYS['left']]:
+        #     rkt.position[0] -= 5
+        # if keys[frame.KEYS['right']]:
+        #     rkt.position[0] += 5
 
         # if keys[frame.KEYS['space']]:
         #     PAUSE_SIMULATION = utl.toggle(PAUSE_SIMULATION)
@@ -240,8 +240,8 @@ def event_handler():
         if key:
             if key == frame.KEYS['space']:
                 PUASE_SIMULATION = utl.toggle(PUASE_SIMULATION)
-        #     elif key == frame.KEYS['down']:
-        #         pass
+            elif key == frame.KEYS['p']:
+                SHOW_INFO = utl.toggle(SHOW_INFO)
         #     elif key == frame.KEYS['left']:
         #         pass
         #     elif key == frame.KEYS['c']:
