@@ -53,6 +53,15 @@ def createSurface(w, h):
 
 class Window(RSurface):
     def __init__(self, w=400, h=300, title='Hello World'):
+        """
+        Initilize a PyGame Main Widnow.
+
+        Parameter:
+        w : width
+        h : height
+        title : title of window
+
+        """
         super().__init__(0, 0, w, h, False)
         self.title = title
         self.__fps = 30
@@ -160,3 +169,13 @@ class Surface(RSurface):
 
     def set_pos(self, x, y):
         self.pos = (x, y)
+
+
+
+
+
+
+
+
+
+        

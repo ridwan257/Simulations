@@ -38,6 +38,10 @@ FONT_OPT = {
 }
 
 RIOFONT = pygame.font.SysFont(FONT_OPT['name'], FONT_OPT['size'])
+def setBold(state):
+	global RIOFONT
+	RIOFONT.set_bold(state)
+	
 def fontColor(color):
 	global FONT_OPT, RIOFONT
 	FONT_OPT["color"] = color
@@ -64,7 +68,8 @@ class InputBox():
 		font_name='Consolas', font_size=14,	  
 		font_color=(0, 0, 0), bg_color=(255, 255, 255),
 		border_color = (0, 0, 0),
-		border_width=1
+		border_width=1, holder = 'Type here...',
+		colon_focus = True
 	) -> None:
 		"""
 		Parameters:
@@ -87,13 +92,14 @@ class InputBox():
 
 		self.buffer = ''
 		self.buffer_length = 0
-		self.holder = { "text" : "Type here...", "color": (51,51,51)}
+		self.holder = { "text" : holder, "color": (51,51,51)}
 		self.focused = False
 		self.triggered = False
 		self.text = ''
 		self.cursor = {"color": (0,0,0), "w": 5, "h":3, "blink": 20}
 		self.__counter = 0
-		self.__onfocus_using_colon = False
+		self.__onfocus_using_colon = True
+		self.__colon_focus = colon_focus
 		
 	@staticmethod
 	def process_cmd(text, delim='='):
@@ -115,7 +121,7 @@ class InputBox():
 				self.focused = False
 		
 
-		if event.type == pygame.KEYDOWN and not self.focused:
+		if event.type == pygame.KEYDOWN and not self.focused and self.__colon_focus:
 			if event.key == pygame.K_SEMICOLON and pygame.key.get_mods() & pygame.KMOD_SHIFT:
 				self.focused = True
 				self.triggered = False
@@ -149,7 +155,7 @@ class InputBox():
 		return command
 
 	def setValue(self, text):
-		self.buffer = text
+		self.buffer = str(text)
 	
 	def getValue(self):
 		return self.buffer
@@ -203,6 +209,7 @@ class Slider:
 		self.min_value = minValue
 		self.max_value = maxValue
 		self.is_focused = False
+		self.is_triggered = False
 
 		self.bar_color = bar_color
 		self.circle_color = circle_color
@@ -217,6 +224,17 @@ class Slider:
 			self.min_value, self.max_value
 		)
 		return value
+
+	def triggered(self):
+		if self.is_triggered:
+			self.is_triggered = False
+			return True
+
+		return False
+
+	def focused(self):
+		return self.is_focused
+
 	
 	def setValue(self, value):
 		if value < self.min_value:
@@ -239,7 +257,11 @@ class Slider:
 		y1 = self.y
 		
 		if event.type == pygame.MOUSEBUTTONUP:
+			if self.is_focused:
+				self.is_triggered = True
 			self.is_focused = False
+			
+
 
 		if not self.is_focused:
 			dist = np.linalg.norm((mx-x1, my-y1))
@@ -257,6 +279,7 @@ class Slider:
 			self.offset = val + self.x
 
 			self.value = self.getValue()
+			
 
 
 	def show(self, x=None, y=None):
@@ -272,6 +295,8 @@ class Slider:
 			self.surface.surface, self.circle_color, 
 			(self.offset, self.y + self.h//2), self.r
 		)
+
+		# print(self.is_focused, self.is_triggered)
 
 
 # *******************************************************************
@@ -360,6 +385,9 @@ class Button:
 			(self.h - self._font_info[1]) / 2 
 		)
 		self._decorate_button_surface()
+
+	def getValue(self):
+		return self._properties['value']
 	
 	def setHoverProperties(self, properties):
 		self._hover_properties |= properties

@@ -1,6 +1,7 @@
 import numpy as np
 import pygame
 from lib import rmath
+from lib import shape
 from templates import dnalib
 from lib import color
 from classes import obstracle
@@ -228,6 +229,8 @@ class Rocket:
             x1, y1 = self.paths[i]
             x2, y2 = self.paths[i+1]
             pen.line(x1, y1, x2, y2)
+            # shape.aaline(pen.surface, (252, 252, 3, 20), (x1, y1), (x2, y2))
+
 
     def show(self, pen):
         # if len(self.paths) > 50:

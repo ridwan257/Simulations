@@ -53,3 +53,7 @@ pp:
 .PHONY : gnumb
 gnumb:
 	python3 guess_number.py
+
+.PHONY : antT
+antT:
+	python3 traveling_ant.py
