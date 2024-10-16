@@ -8,6 +8,12 @@ def to_string(vector, digit=3, sep=' '):
     # return text[1:-1].strip()
     return text
 
+def print_array2d(arr, end=' '):
+    for row in arr: 
+        for v in row: 
+            print(v, end=end)
+        print()
+
 def image(filepath, size=None):
     img = pygame.image.load(filepath).convert_alpha()   
     if size is not None:
